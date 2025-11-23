@@ -13,3 +13,4 @@ beautifulsoup4==4.12.3
 TTS==0.22.0
 numpy==2.1.0
 soundfile==0.12.1
+httpx==0.27.0

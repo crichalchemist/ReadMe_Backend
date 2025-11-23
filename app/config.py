@@ -1,4 +1,6 @@
 from pathlib import Path
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 
 
@@ -10,6 +12,8 @@ class Settings(BaseSettings):
     db_path: Path = Path.home() / "readme" / "db" / "readme.db"
     audio_format: str = "wav"
     coqui_model: str = "tts_models/en/ljspeech/tacotron2-DDC"
+    coqui_api_url: Optional[str] = None
+    coqui_api_timeout: int = 30
 
     class Config:
         env_prefix = "README_"
