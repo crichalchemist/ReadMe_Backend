@@ -28,10 +28,22 @@ class Book(Base):
     content_path = Column(String, nullable=False)
     cover_path = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    metadata = Column(Text, nullable=True)
 
-    annotations = relationship("Annotation", back_populates="book", cascade="all, delete-orphan")
-    progress = relationship("Progress", back_populates="book", uselist=False, cascade="all, delete-orphan")
+    # FIXED: SQLAlchemy reserves "metadata"
+    extra_metadata = Column(Text, nullable=True)
+
+    annotations = relationship(
+        "Annotation",
+        back_populates="book",
+        cascade="all, delete-orphan"
+    )
+
+    progress = relationship(
+        "Progress",
+        back_populates="book",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 
 class Annotation(Base):
@@ -53,6 +65,7 @@ class Progress(Base):
     book_id = Column(String, ForeignKey("books.id"), nullable=False, unique=True)
     chapter_id = Column(String, nullable=True)
     paragraph_index = Column(Integer, nullable=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False, onupdate=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow,
+                        nullable=False, onupdate=datetime.utcnow)
 
     book = relationship("Book", back_populates="progress")

@@ -1,0 +1,32 @@
+version: "3.9"
+
+  tts:
+    image: ghcr.io/coqui-ai/tts-gpu:latest
+    container_name: coqui-tts
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    command: >
+      python3 TTS/server/server.py
+      --model_name "tts_models/multilingual/multi-dataset/xtts_v2"
+      --use_cuda true
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
+
+  backend:
+    build: .
+    container_name: readme-backend
+    command: >
+      /venv/bin/python -m uvicorn app.main:app
+      --host 0.0.0.0 --port 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - tts
+    restart: unless-stopped
+    volumes:
+      - .:/app
+
